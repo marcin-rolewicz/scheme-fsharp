@@ -74,7 +74,7 @@ module tester =
       member tc.testSub() =
          testDouble testEnv "(- 1 2)" (1-2)
          testDouble testEnv "(- 1 (- 2 3))" (1-(2-3))
-         testDouble testEnv "(- 1)" (-1)              // TODO; special case not handled correctly
+         testDouble testEnv "(- 1)" (-1)
          testDouble testEnv "(- 1 1 1)" (1-1-1)
 
       [<Test>]
@@ -89,7 +89,7 @@ module tester =
          testDouble testEnv "(/ 9 3)" (9/3)
          testDouble testEnv "(+ 1 (/ 2 3))" (1.0+2.0/3.0)
          testDouble testEnv "(/ 1)" (1)
-         testDouble testEnv "(/ 2)" (1.0/2.0)            // TODO; special case not handled correctly
+         testDouble testEnv "(/ 2)" (1.0/2.0) 
          testDouble testEnv "(/ 1 2 3)" (1.0/2.0/3.0)
 
       [<Test>]

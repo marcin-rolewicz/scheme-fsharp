@@ -9,9 +9,14 @@ module helper =
 
    // --- Generic helpers ----------------------------
     
-   let aritFun op env comb = 
+   let aritFun op neutral env comb = 
       let aritFun' op env = function
          | []        -> failwith "arithmetric error"
+         | [e] ->
+            match snd(eval env e) with
+            | Value(Number(v)) ->
+               op neutral v     
+            | _  -> failwith "arithmetric error"
          | e :: t    ->
             match snd(eval env e) with
             | Value(Number(v)) ->
@@ -254,10 +259,10 @@ module helper =
       (env, NullExpr)
             
    let globalEnv = 
-      [ Map.ofList([  ("+",       Procedure(aritFun (+)));
-                     ("-",       Procedure(aritFun (-)));
-                     ("*",       Procedure(aritFun (*)));
-                     ("/",       Procedure(aritFun (/)));
+      [ Map.ofList([  ("+",       Procedure(aritFun (+) 0.0));
+                     ("-",       Procedure(aritFun (-) 0.0));
+                     ("*",       Procedure(aritFun (*) 1.0));
+                     ("/",       Procedure(aritFun (/) 1.0));
                      ("=",       Procedure(combFun (=)));
                      (">",       Procedure(combFun (>)));
                      ("<",       Procedure(combFun (<)));
