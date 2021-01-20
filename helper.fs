@@ -9,9 +9,14 @@ module helper =
 
    // --- Generic helpers ----------------------------
     
-   let aritFun op env comb = 
+   let aritFun op neutral env comb = 
       let aritFun' op env = function
          | []        -> failwith "arithmetric error"
+         | [e] ->
+            match snd(eval env e) with
+            | Value(Number(v)) ->
+               op neutral v     
+            | _  -> failwith "arithmetric error"
          | e :: t    ->
             match snd(eval env e) with
             | Value(Number(v)) ->
@@ -31,10 +36,11 @@ module helper =
          | e1 :: e2 :: t   ->
             match (snd(eval env e1), snd(eval env e2)) with
                | (Value(Number(a)), Value(Number(b)))  -> 
-                  (op a b) && (combFun' op env t)
+                  (op a b) && (combFun' op env (e2::t))
                | _         -> failwith "comparison error"
-
-      (env, Value(Boolean(combFun' op env comb)))
+      match comb with
+      | _ :: []  -> failwith "comparison error"
+      | _ -> (env, Value(Boolean(combFun' op env comb)))
 
    // build a list of LValues from a Combination of Symbols
    let rec buildList combs =
@@ -254,10 +260,10 @@ module helper =
       (env, NullExpr)
             
    let globalEnv = 
-      [ Map.ofList([  ("+",       Procedure(aritFun (+)));
-                     ("-",       Procedure(aritFun (-)));
-                     ("*",       Procedure(aritFun (*)));
-                     ("/",       Procedure(aritFun (/)));
+      [ Map.ofList([  ("+",       Procedure(aritFun (+) 0.0));
+                     ("-",       Procedure(aritFun (-) 0.0));
+                     ("*",       Procedure(aritFun (*) 1.0));
+                     ("/",       Procedure(aritFun (/) 1.0));
                      ("=",       Procedure(combFun (=)));
                      (">",       Procedure(combFun (>)));
                      ("<",       Procedure(combFun (<)));

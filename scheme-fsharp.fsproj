@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>scheme_fsharp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="interpreter.fs" />
+    <Compile Include="helper.fs" />
+    <Compile Include="parser.fs" />
+    <Compile Include="runner.fs" />
+  </ItemGroup>
+
+</Project>

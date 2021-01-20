@@ -53,6 +53,11 @@ module tester =
       let res = exprStr |> parse |> List.head |> (getBoolResult env)
       Assert.AreEqual(correct, res)
 
+   let testException env exprStr exMessage=
+       let res () =  exprStr |> parse |> List.head |> (getBoolResult env)
+       let ex = Assert.Throws<System.Exception>( TestDelegate(res >> ignore) )
+       Assert.AreEqual(ex.Message, exMessage)
+
    let testList env exprStr correct =
       exprStr |> parse |> List.head |> (eval env) |> testListResult correct |> Assert.IsTrue
 
@@ -74,7 +79,7 @@ module tester =
       member tc.testSub() =
          testDouble testEnv "(- 1 2)" (1-2)
          testDouble testEnv "(- 1 (- 2 3))" (1-(2-3))
-         testDouble testEnv "(- 1)" (-1)              // TODO; special case not handled correctly
+         testDouble testEnv "(- 1)" (-1)
          testDouble testEnv "(- 1 1 1)" (1-1-1)
 
       [<Test>]
@@ -89,7 +94,7 @@ module tester =
          testDouble testEnv "(/ 9 3)" (9/3)
          testDouble testEnv "(+ 1 (/ 2 3))" (1.0+2.0/3.0)
          testDouble testEnv "(/ 1)" (1)
-         testDouble testEnv "(/ 2)" (1.0/2.0)            // TODO; special case not handled correctly
+         testDouble testEnv "(/ 2)" (1.0/2.0) 
          testDouble testEnv "(/ 1 2 3)" (1.0/2.0/3.0)
 
       [<Test>]
@@ -101,44 +106,45 @@ module tester =
       member tc.testEq() =
          testBool testEnv "(= 2 2)" (2=2)
          testBool testEnv "(= 2 (+ 1 1))" (2=(1+1))
-         testBool testEnv "(= 1)" (true)
          testBool testEnv "(= 1 1 (+ 1 1) 1)" (false)
+         testException testEnv "(= 1)" ("comparison error") 
 
       [<Test>]
       member tc.testGt() =
          testBool testEnv "(> 2 2)" (2>2)
          testBool testEnv "(> 1 2)" (1>2)
          testBool testEnv "(> 2 1)" (2>1)
-         testBool testEnv "(> (+ 1 1 1) 2)" ((1+1+1)>2)
-         testBool testEnv "(> 1)" (true)                 // TODO; should raise failure
+         testBool testEnv "(> (+ 1 1 1) 2)" ((1+1+1)>2)                 
          testBool testEnv "(> 1 1 (+ 1 1) 1)" (false)
+         testException testEnv "(> 1)" ("comparison error")
 
       [<Test>]
       member tc.testLt() =
          testBool testEnv "(< 2 2)" (2<2)
          testBool testEnv "(< 1 2)" (1<2)
          testBool testEnv "(< 2 1)" (2<1)
-         testBool testEnv "(< (+ 1 1 1) 2)" ((1+1+1)<2)
-         testBool testEnv "(< 1)" (true)                 // TODO; should raise failure
+         testBool testEnv "(< (+ 1 1 1) 2)" ((1+1+1)<2)               
          testBool testEnv "(< 1 1 (+ 1 1) 1)" (false)
+         testException testEnv "(< 1)" ("comparison error") 
 
       [<Test>]
       member tc.testGe() =
          testBool testEnv "(>= 2 2)" (2>=2)
          testBool testEnv "(>= 1 2)" (1>=2)
          testBool testEnv "(>= 2 1)" (2>=1)
-         testBool testEnv "(>= (+ 1 1 1) 2)" ((1+1+1)>=2)
-         testBool testEnv "(>= 1)" (true)                 // TODO; should raise failure
-         testBool testEnv "(>= 1 1 (+ 1 1) 1)" (false)    // TODO; returning true
+         testBool testEnv "(>= (+ 1 1 1) 2)" ((1+1+1)>=2)                
+         testBool testEnv "(>= 1 1 (+ 1 1) 1)" (false) 
+         testException testEnv "(>= 1)" ("comparison error") 
 
       [<Test>]
       member tc.testLe() =
          testBool testEnv "(<= 2 2)" (2<=2)
          testBool testEnv "(<= 1 2)" (1<=2)
          testBool testEnv "(<= 2 1)" (2<=1)
-         testBool testEnv "(<= (+ 1 1 1) 2)" ((1+1+1)<=2)
-         testBool testEnv "(<= 1)" (true)                 // TODO; should raise failure
+         testBool testEnv "(<= (+ 1 1 1) 2)" ((1+1+1)<=2)                 
          testBool testEnv "(<= 1 1 (+ 1 1) 1)" (false)
+         testBool testEnv "(<= 1 3 1 2)" (false)
+         testException testEnv "(<= 1)" ("comparison error")
 
       [<Test>]
       member tc.testNot() =
