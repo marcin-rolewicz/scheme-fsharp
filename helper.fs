@@ -38,8 +38,9 @@ module helper =
                | (Value(Number(a)), Value(Number(b)))  -> 
                   (op a b) && (combFun' op env (e2::t))
                | _         -> failwith "comparison error"
-
-      (env, Value(Boolean(combFun' op env comb)))
+      match comb with
+      | _ :: []  -> failwith "comparison error"
+      | _ -> (env, Value(Boolean(combFun' op env comb)))
 
    // build a list of LValues from a Combination of Symbols
    let rec buildList combs =
