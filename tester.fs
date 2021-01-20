@@ -129,7 +129,7 @@ module tester =
          testBool testEnv "(>= 2 1)" (2>=1)
          testBool testEnv "(>= (+ 1 1 1) 2)" ((1+1+1)>=2)
          testBool testEnv "(>= 1)" (true)                 // TODO; should raise failure
-         testBool testEnv "(>= 1 1 (+ 1 1) 1)" (false)    // TODO; returning true
+         testBool testEnv "(>= 1 1 (+ 1 1) 1)" (false)    
 
       [<Test>]
       member tc.testLe() =
@@ -139,6 +139,7 @@ module tester =
          testBool testEnv "(<= (+ 1 1 1) 2)" ((1+1+1)<=2)
          testBool testEnv "(<= 1)" (true)                 // TODO; should raise failure
          testBool testEnv "(<= 1 1 (+ 1 1) 1)" (false)
+         testBool testEnv "(<= 1 3 1 2)" (false)
 
       [<Test>]
       member tc.testNot() =

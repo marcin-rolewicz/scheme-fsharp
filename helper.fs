@@ -36,7 +36,7 @@ module helper =
          | e1 :: e2 :: t   ->
             match (snd(eval env e1), snd(eval env e2)) with
                | (Value(Number(a)), Value(Number(b)))  -> 
-                  (op a b) && (combFun' op env t)
+                  (op a b) && (combFun' op env (e2::t))
                | _         -> failwith "comparison error"
 
       (env, Value(Boolean(combFun' op env comb)))
